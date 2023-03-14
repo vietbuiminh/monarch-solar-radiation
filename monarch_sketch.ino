@@ -5,7 +5,6 @@
 // Instantiate classes
 Margay Logger;
 MonarchSW PyroUp(UP);
-MonarchSW PyroDown(DOWN);
 
 // Empty header to start; will include sensor labels and information
 String Header = "";
@@ -14,9 +13,9 @@ String Header = "";
 uint32_t updateRate = 5;
 
 void setup(){
-    Header = Header + "Kipp and Zonen Voltage [uV]"+ PyroUp.GetHeader() + PyroDown.GetHeader();
+    Header = Header + "Kipp and Zonen Voltage [uV], "+ PyroUp.GetHeader();
     Logger.begin(Header);
-    init();
+    initialize();
 }
 
 void loop(){
@@ -26,11 +25,12 @@ void loop(){
 String update() 
 {
     initialize();
-    return String(1E6*Logger.getVoltage(), 2);
+    String kz = String(1E6*Logger.getVoltage(), 2);
+    String P_update = PyroUp.GetString();
+    return kz + ", " + P_update;
 }
 
 void initialize()
 {
   PyroUp.begin();
-  PyroDown.begin();
 }
