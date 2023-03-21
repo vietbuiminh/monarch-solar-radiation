@@ -37,18 +37,23 @@ regr.fit(X, Y)
 y_hats2 = regr.predict(X)
 df['y_hats'] = y_hats2
 
+# Plot colors of points based on time stamp
+# Assuming everything in order
+t_fract = df.index / df.index.max()
+#color = 1 - (t_fract * 0.8 + 0.1)
 
 
-
-plt.figure(figsize=(8,10))
+fig = plt.figure(figsize=(8,10))
 i=0
 for col in cols:
     i += 1
     ax = plt.subplot(3, 2, i)
-    ax.plot( df[' Pyro [uV]'], df[col], 'ko', alpha=0.02 )
+    scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=1 )
     #ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.2)
     ax.set_xlabel(' Pyro [uV]', fontweight='bold')
     ax.set_ylabel(col, fontweight='bold')
+    fig.colorbar(scatter, location='bottom')
     
 plt.tight_layout()
 plt.show()
+
