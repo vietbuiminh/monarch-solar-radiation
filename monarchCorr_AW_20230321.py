@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 import statsmodels.api as sm
 
 #  Reading in log file
-df = pd.read_csv('Log00017.csv')
+df = pd.read_csv('Log00002.csv')
 
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
 df = df.iloc[: ,3:]
@@ -48,7 +48,7 @@ i=0
 for col in cols:
     i += 1
     ax = plt.subplot(3, 2, i)
-    scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=1 )
+    scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=0.1 )
     #ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.2)
     ax.set_xlabel(' Pyro [uV]', fontweight='bold')
     ax.set_ylabel(col, fontweight='bold')

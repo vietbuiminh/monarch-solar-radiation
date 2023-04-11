@@ -4,7 +4,7 @@ import seaborn as sns
 from sklearn.linear_model import LinearRegression
 
 #  Reading in log file
-df = pd.read_csv('Log00017.csv')
+df = pd.read_csv('Log00001.csv')
 
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
 df = df.iloc[: ,3:]
