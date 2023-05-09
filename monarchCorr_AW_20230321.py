@@ -8,10 +8,15 @@ from sklearn.model_selection import train_test_split
 import statsmodels.api as sm
 
 #  Reading in log file
-df = pd.read_csv('Log00002.csv')
+df1 = pd.read_csv('Log00001.csv') 
+df2 = pd.read_csv('Log00002.csv')
+df3 = pd.read_csv('Log00003.csv')
+df4 = pd.read_csv('Log00004.csv')
+frames = [df1, df2, df3, df4]
+df = pd.concat(frames)
 
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
-df = df.iloc[: ,3:]
+df = df.iloc[: ,2:]
 df = df.drop(columns=[" Bat [V]", " R_u [deg]", " P_u [deg]"])
 df = df.iloc[: ,:-2]
 #print(df)
@@ -48,8 +53,8 @@ i=0
 for col in cols:
     i += 1
     ax = plt.subplot(3, 2, i)
-    scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=0.1 )
-    #ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.2)
+    scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=0.7 )
+    ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.05)
     ax.set_xlabel(' Pyro [uV]', fontweight='bold')
     ax.set_ylabel(col, fontweight='bold')
     fig.colorbar(scatter, location='bottom')
