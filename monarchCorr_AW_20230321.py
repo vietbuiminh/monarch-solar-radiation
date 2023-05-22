@@ -8,14 +8,21 @@ from sklearn.model_selection import train_test_split
 import statsmodels.api as sm
 
 #  Reading in log file
-df1 = pd.read_csv('Log00001.csv') 
+#df1 = pd.read_csv('Log00001.csv') 
 df2 = pd.read_csv('Log00002.csv')
-df3 = pd.read_csv('Log00003.csv')
+#df3 = pd.read_csv('Log00003.csv')
 df4 = pd.read_csv('Log00004.csv')
-frames = [df1, df2, df3, df4]
+frames = [df4]
 df = pd.concat(frames)
 
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
+t_fract = df['Time [UTC]']
+t_fract = (t_fract.str[11:13])
+t_fract = t_fract.astype(int)
+
+# Zenith Angle
+h = (t - 12) / 12
+
 df = df.iloc[: ,2:]
 df = df.drop(columns=[" Bat [V]", " R_u [deg]", " P_u [deg]"])
 df = df.iloc[: ,:-2]
@@ -41,12 +48,13 @@ regr.fit(X, Y)
 
 y_hats2 = regr.predict(X)
 df['y_hats'] = y_hats2
-
+#12 13
 # Plot colors of points based on time stamp
 # Assuming everything in order
-t_fract = df.index / df.index.max()
-#color = 1 - (t_fract * 0.8 + 0.1)
+#t_fract = df.index / df.index.max()
 
+#color = 1 - (t_fract * 0.8 + 0.1)
+color = t_fract
 
 fig = plt.figure(figsize=(8,10))
 i=0
@@ -54,7 +62,7 @@ for col in cols:
     i += 1
     ax = plt.subplot(3, 2, i)
     scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=0.7 )
-    ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.05)
+    #ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.05)
     ax.set_xlabel(' Pyro [uV]', fontweight='bold')
     ax.set_ylabel(col, fontweight='bold')
     fig.colorbar(scatter, location='bottom')
