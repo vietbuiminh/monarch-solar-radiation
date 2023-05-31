@@ -57,7 +57,7 @@ for col in cols:
     ax = plt.subplot(3, 2, i)
     scatter = ax.scatter( df[' Pyro [uV]'], df[col], c=t_fract, alpha=0.7 )
     # Show estimates here
-    #ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.05)
+    ax.plot( df['y_hats'], df[col], 'ko', color = 'red', alpha=0.05)
     ax.set_xlabel(' Pyro [uV]', fontweight='bold')
     ax.set_ylabel(col, fontweight='bold')
     fig.colorbar(scatter, location='bottom')
