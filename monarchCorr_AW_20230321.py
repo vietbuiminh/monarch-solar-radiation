@@ -7,7 +7,7 @@ from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 # import statsmodels.api as sm
 import duckdb
-import timezone
+# import timezone
 
 import glob
 import os
