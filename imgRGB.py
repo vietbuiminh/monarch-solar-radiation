@@ -18,7 +18,7 @@ for file_path in files:
     height = dimension[0]
     width = dimension[1]
     margin = 100  # this will ignore the margin inside the boundary of the image
-    info_image = image[:32, 28:647]
+    # info_image = image[:32, 28:647]
     # plt.imshow(info_image[:, :, [2, 1, 0]])
     # plt.show()
 

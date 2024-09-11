@@ -2,13 +2,14 @@
 ~ an on-going research project~
 
 ---
-**Last updated:** 2023-10-05 14:30:00
+**Last updated:** 2023-10-05 17:30:00
 
-![Sky BGR signature](skysignature.png)
+![Sky BGR signature](completeskysignature.png)
 
-*Figure 1: Sky BRG Signature between the 7 to 30 of June*
+*Figure 1: Sky BRG Signature between the 7 June to 28 August*
 
-Interesting finding: between the 14 and 16 of June, I checked with the past weather and they reported those days to have a lot of smoke in the air
+Interesting finding: between the 14 and 16 of June, I checked with the past weather and they reported those days to have a lot of smoke in the air.
+We can also see the day light getting shorter.
 
 ![Sensors data](hour9tohour17.png)
 

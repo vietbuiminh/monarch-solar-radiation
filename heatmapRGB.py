@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.dates as mdates
 
 start_date, start_month = 7, 6
-end_date, end_month = 10, 7
+end_date, end_month = 28, 8
 
 start_timestamp = pd.Timestamp(year=2023, month=start_month, day=start_date)
 end_timestamp = pd.Timestamp(
@@ -19,12 +19,12 @@ rows_per_day = 480  # this is what we would like to be constant for everyday
 def pad_array(arr, target_shape):
     padded_arr = np.full((target_shape,), np.nan)
     arr_shape = arr.shape[0]
-    # print(arr['time'], arr_shape, target_shape)
-    if arr_shape > target_shape:
-        print("UGH", arr_shape)
-        # Truncate the array if it is larger than the target shape
-        arr = arr[:target_shape]
-        arr_shape = target_shape
+    # # print(arr['time'], arr_shape, target_shape)
+    # if arr_shape > target_shape:
+    #     print("UGH", arr_shape)
+    #     # Truncate the array if it is larger than the target shape
+    #     arr = arr[:target_shape]
+    #     arr_shape = target_shape
     padded_arr[:arr_shape] = arr
     return padded_arr
 
@@ -32,8 +32,11 @@ def pad_array(arr, target_shape):
 data1 = pd.read_csv("image_data.csv")
 data2 = pd.read_csv("image_data2.csv")
 data3 = pd.read_csv("image_data3.csv")
+data4 = pd.read_csv("image_data4.csv")
+data5 = pd.read_csv("image_data5.csv")
+data6 = pd.read_csv("image_data6.csv")
 
-data = pd.concat([data1, data2, data3])
+data = pd.concat([data1, data2, data3, data4, data5, data6])
 
 data['time'] = pd.to_datetime(data["time"])
 data = data.sort_values(by='time')
@@ -41,8 +44,10 @@ data = data.sort_values(by='time')
 # Filter the subset for a specific day
 subset = data[(data['time'] >= start_timestamp)
               & (data['time'] <= end_timestamp)]
+print(subset)
 # Extract unique dates from the DataFrame
 unique_dates = subset['time'].dt.date.unique()
+print(unique_dates)
 day = subset['time'].dt.day
 hour = subset['time'].dt.hour
 minute = subset['time'].dt.minute
@@ -50,7 +55,8 @@ blue = subset['b']
 green = subset['g']
 red = subset['r']
 
-unique_days = len(day.unique())
+unique_days = len(unique_dates)
+print(unique_days)
 blue_padded = pad_array(blue, (rows_per_day * unique_days))
 green_padded = pad_array(green, (rows_per_day * unique_days))
 red_padded = pad_array(red, (rows_per_day * unique_days))
