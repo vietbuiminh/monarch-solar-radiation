@@ -8,7 +8,7 @@ import os
 import time
 
 df = pd.DataFrame(columns=['filename', 'time', 'b', 'g', 'r'])
-img_folder = '/Volumes/Extreme SSD/sky/102RECNX'
+img_folder = '/Volumes/Extreme SSD/sky/103RECNX'
 files = glob.glob(os.path.join(img_folder, '*.JPG'))
 print(len(files))
 for file_path in files:
@@ -55,6 +55,6 @@ for file_path in files:
     # plt.imshow(cropped_image[:, :, [2, 1, 0]])
     # plt.show()
 
-csv_file_path = 'image_data3.csv'
+csv_file_path = 'image_data4.csv'
 df.to_csv(csv_file_path, index=False)
 print(f'Saved data to CSV: {csv_file_path}')

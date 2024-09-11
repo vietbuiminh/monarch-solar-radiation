@@ -3,31 +3,44 @@ import numpy as np
 import pandas as pd
 import matplotlib.dates as mdates
 
-start_date = 7
-end_date = 19
+start_date, start_month = 7, 6
+end_date, end_month = 10, 7
+
+start_timestamp = pd.Timestamp(year=2023, month=start_month, day=start_date)
+end_timestamp = pd.Timestamp(
+    year=2023, month=end_month, day=end_date, hour=23, minute=59, second=59)
+print(end_timestamp)
+
 rows_per_day = 480  # this is what we would like to be constant for everyday
 # this function is use for the case of a day that does not have
 # 480 data points and it will pad that to make it into 480
 
 
 def pad_array(arr, target_shape):
-    padded_arr = np.full(target_shape, np.nan)
+    padded_arr = np.full((target_shape,), np.nan)
     arr_shape = arr.shape[0]
+    # print(arr['time'], arr_shape, target_shape)
+    if arr_shape > target_shape:
+        print("UGH", arr_shape)
+        # Truncate the array if it is larger than the target shape
+        arr = arr[:target_shape]
+        arr_shape = target_shape
     padded_arr[:arr_shape] = arr
     return padded_arr
 
 
 data1 = pd.read_csv("image_data.csv")
 data2 = pd.read_csv("image_data2.csv")
+data3 = pd.read_csv("image_data3.csv")
 
-data = pd.concat([data1, data2])
+data = pd.concat([data1, data2, data3])
 
 data['time'] = pd.to_datetime(data["time"])
 data = data.sort_values(by='time')
 
 # Filter the subset for a specific day
-subset = data[(data['time'].dt.day >= start_date)
-              & (data['time'].dt.day <= end_date)]
+subset = data[(data['time'] >= start_timestamp)
+              & (data['time'] <= end_timestamp)]
 # Extract unique dates from the DataFrame
 unique_dates = subset['time'].dt.date.unique()
 day = subset['time'].dt.day
@@ -38,9 +51,9 @@ green = subset['g']
 red = subset['r']
 
 unique_days = len(day.unique())
-blue_padded = pad_array(blue, (rows_per_day * unique_days,))
-green_padded = pad_array(green, (rows_per_day * unique_days,))
-red_padded = pad_array(red, (rows_per_day * unique_days,))
+blue_padded = pad_array(blue, (rows_per_day * unique_days))
+green_padded = pad_array(green, (rows_per_day * unique_days))
+red_padded = pad_array(red, (rows_per_day * unique_days))
 
 
 # Replace NaN values with 0 for blue and green channels, and 1 for the red channel

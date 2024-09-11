@@ -102,16 +102,19 @@ df['IR_M_u'] = df['IR_M_u'].astype('float')
 print(df['White_u'])
 
 df['Time [UTC]'] = pd.to_datetime(df["Time [UTC]"])
-df = df[(df['Time [UTC]'].dt.hour >= 9) & (df['Time [UTC]'].dt.hour <= 17)]
+df['Time [UTC]'] = df['Time [UTC]'].dt.tz_localize('UTC')
+df['time'] = df['Time [UTC]'].dt.tz_convert(
+    'America/Chicago')
+df = df[(df['time'].dt.hour >= 6) & (df['time'].dt.hour <= 17)]
 df = duckdb.query("SELECT  *  FROM df WHERE White_u < 65535").to_df()
 weird_date = duckdb.query(
-    'SELECT "Time [UTC]", "Pyro [uV]", "IR_M_u" FROM df WHERE ((IR_M_u < 1.5 AND IR_M_u > 0.5) AND ("Pyro [uV]" < 8000 AND "Pyro [uV]" > 2000))').to_df()
+    'SELECT "time", "Pyro [uV]", "IR_M_u" FROM df WHERE ((IR_M_u < 1.5 AND IR_M_u > 0.5) AND ("Pyro [uV]" < 8000 AND "Pyro [uV]" > 2000))').to_df()
 print(weird_date)
 another_weird_date = duckdb.query(
-    'SELECT "Time [UTC]", "Pyro [uV]", "IR_M_u" FROM df WHERE ((IR_M_u < 1.56 AND IR_M_u > 0.13) AND ("Pyro [uV]" < 250 AND "Pyro [uV]" > -67))').to_df()
+    'SELECT "time", "Pyro [uV]", "IR_M_u" FROM df WHERE ((IR_M_u < 1.56 AND IR_M_u > 0.13) AND ("Pyro [uV]" < 250 AND "Pyro [uV]" > -67))').to_df()
 print(another_weird_date)
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
-t_fract = df['Time [UTC]'].astype(str)
+t_fract = df['time'].astype(str)
 t_fract = (t_fract.str[11:13])
 t_fract = t_fract.astype(int)
 
