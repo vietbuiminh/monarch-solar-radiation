@@ -9,7 +9,7 @@
 *Figure 1: Sky BRG Signature between the 7 June to 28 August*
 
 Interesting finding: between the 14 and 16 of June, I checked with the past weather and they reported those days to have a lot of smoke in the air.
-We can also see the day light getting shorter.
+We can also see the day light getting shorter approaching August.
 
 ![Sensors data](hour9tohour17.png)
 
