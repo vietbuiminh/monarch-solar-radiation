@@ -61,7 +61,6 @@ X = data_combined.drop(columns=[' Pyro [uV]'])
 color = t_fract
 
 fig, ax = plt.subplots()
-fig, ax = plt.subplots()
 scatter = ax.scatter(
     data_combined[' Pyro [uV]'], data_combined['b'], c=color, alpha=1, s=2)
 cbar = fig.colorbar(scatter, ax=ax, orientation='horizontal')
