@@ -11,7 +11,7 @@
 Interesting finding: between the 14 and 16 of June, I checked with the past weather and they reported those days to have a lot of smoke in the air.
 We can also see the day light getting shorter approaching August.
 
-![Sensors data](hour9tohour17.png)
+![Sensors data](convertUTC_hour6_to_hour17.png)
 
 *Figure 2: Sensors data v Pyro between the hour 6 to hour 17*
 
