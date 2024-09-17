@@ -2,7 +2,11 @@
 ~ an on-going research project~
 
 ---
-**Last updated:** 2023-10-05 17:30:00
+**Last updated:** 
+2024-09-17 
+![Zeros in IR S in bins](zeros_in_IR_S_u.png)
+
+I was wondering if the the zeros from IR short wave frequently around a specific time of the day but turn out after I bin them into hours and bar graph all of the zeros with high Pyrometer values, the patterns tells me it happened a lot around the early hours and interestingly the whole day of 25 of June. I checked the photos of the sky it looks blue and with normal clouds. Still don't know why, perhaps this is due to hardware issue?
 
 ![Sky BGR signature](completeskysignature.png)
 

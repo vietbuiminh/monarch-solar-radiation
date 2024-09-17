@@ -113,6 +113,35 @@ print(weird_date)
 another_weird_date = duckdb.query(
     'SELECT "time", "Pyro [uV]", "IR_M_u" FROM df WHERE ((IR_M_u < 1.56 AND IR_M_u > 0.13) AND ("Pyro [uV]" < 250 AND "Pyro [uV]" > -67))').to_df()
 print(another_weird_date)
+inves_zero = duckdb.query(
+    'SELECT "time", "Pyro [uV]", "IR_S_u" FROM df WHERE (IR_S_u <= 0)').to_df()
+print(inves_zero)
+csv_file_path = 'inves_zero.csv'
+inves_zero.to_csv(csv_file_path, index=False)
+# Extract the date and hour from the 'time' column
+inves_zero['date'] = inves_zero['time'].dt.date
+inves_zero['hour'] = inves_zero['time'].dt.hour
+
+# Group the data by date and hour and count the number of entries for each group
+grouped_data = inves_zero.groupby(
+    ['date', 'hour']).size().reset_index(name='count')
+
+# Pivot the data to have hours as columns and dates as rows
+pivot_data = grouped_data.pivot(
+    index='date', columns='hour', values='count').fillna(0)
+
+# Plot the bar graph for each date
+pivot_data.plot(kind='bar', stacked=True, figsize=(12, 8), colormap='viridis')
+plt.xlabel('Date', fontweight='bold')
+plt.ylabel('Total Count', fontweight='bold')
+plt.title('Total Count by Hour and Date', fontweight='bold')
+plt.legend(title='Hour of the Day', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.title('Total Count by Hour of the Day', fontweight='bold')
+plt.xticks(range(0, 24))  # Ensure all hours are shown on the x-axis
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
 t_fract = df['time'].astype(str)
 t_fract = (t_fract.str[11:13])
