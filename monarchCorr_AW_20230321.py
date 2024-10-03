@@ -3,8 +3,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 # import seaborn as sns
-from sklearn import linear_model
-from sklearn.model_selection import train_test_split
+# from sklearn import linear_model
+# from sklearn.model_selection import train_test_split
 # import statsmodels.api as sm
 import duckdb
 # import timezone
@@ -107,7 +107,7 @@ df['time'] = df['Time [UTC]'].dt.tz_convert(
     'America/Chicago')
 
 # filter, you can comment this line to view the full data
-# df = df[(df['time'].dt.hour >= 9) & (df['time'].dt.hour <= 17)]
+df = df[(df['time'].dt.hour >= 9) & (df['time'].dt.hour <= 17)]
 df = duckdb.query("SELECT  *  FROM df WHERE White_u < 65535").to_df()
 # print(df['Time [UTC]'])
 weird_date = duckdb.query(
@@ -156,7 +156,12 @@ print(temperature)
 IR_sim = df['IR_S_u_sim']
 
 fig, ax1 = plt.subplots()
+error_occured = duckdb.query("SELECT time FROM df WHERE IR_S_u == 0").to_df()
+csv_file_path = 'zero_reading_time.csv'
+error_occured.to_csv(csv_file_path, index=False)
+print(f'Saved combined data to CSV: {csv_file_path}')
 
+print(error_occured)
 ax1.plot(df['time'], IR_sim, c='r')
 ax1.set_xlabel('Time', fontweight='bold')
 ax1.set_ylabel('IR Short Wave Reading (0/1)', fontweight='bold')
