@@ -17,14 +17,15 @@ data6 = pd.read_csv("image_data6.csv")
 sky_data = pd.concat([data1, data2, data3, data4, data5, data6])
 sky_data['time'] = pd.to_datetime(sky_data["time"])
 sky_data['time'] = sky_data['time'].dt.tz_localize('America/Chicago')
-
+sky_data.drop(columns=['filename'], inplace=True)
 sky_data = sky_data.sort_values(by='time')
 # print(sky_data)
 
 
 zero_data.set_index('time', inplace=True)
 sky_data.set_index('time', inplace=True)
-
+zero_data_resampled = zero_data.resample('10min').mean()
+sky_data_resampled = sky_data.resample('10min').mean()
 
 # Merge the data on the 'time' index to get the overlapping subset
 data_combined = pd.merge(
