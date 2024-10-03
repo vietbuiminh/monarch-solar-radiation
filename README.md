@@ -3,7 +3,10 @@
 
 ---
 **Last updated:** 
-2024-10-01
+2024-10-03
+![](graphs/rgb_value_from_zero_readings.png)
+This graphs show the RGB value of the zero readings from IR_s sensor. The scatter with black edge are the zero readings. There is no correlation between the IR shortwave reading with the rainy/cloudy conditions, it did catch some zeros from the huge rain storm on the 10 of June in 2023 but other zero readings from checking the camera photos did not support that arguement. 
+
 The station has been setup and currently running on top of SAFL. It will be running for a couple of days. The goal is to check if the same error reproduced in this new run.
 
 ![](graphs/filtered_error_irs_temp.png)
