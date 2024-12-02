@@ -6,7 +6,7 @@ import glob
 import os
 import time
 
-img_folder = '/Volumes/Extreme SSD/sky/105RECNX'
+img_folder = '/Volumes/Extreme SSD/sky/106RECNX'
 files = glob.glob(os.path.join(img_folder, '*.JPG'))
 print(len(files))
 # Initialize an empty list to store data
@@ -52,6 +52,6 @@ for file_path in files:
 df = pd.DataFrame(data_list)
 
 # Save the DataFrame to a CSV file
-csv_file_path = 'image_data6.csv'
+csv_file_path = 'image_data7.csv'
 df.to_csv(csv_file_path, index=False)
 print(f'Saved data to CSV: {csv_file_path}')

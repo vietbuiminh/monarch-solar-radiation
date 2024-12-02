@@ -3,12 +3,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.dates as mdates
 
-start_date, start_month = 7, 6
-end_date, end_month = 28, 8
+start_date, start_month = 11, 6
+end_date, end_month = 11, 6
+year = 2023
 
-start_timestamp = pd.Timestamp(year=2023, month=start_month, day=start_date)
+start_timestamp = pd.Timestamp(year=year, month=start_month, day=start_date)
 end_timestamp = pd.Timestamp(
-    year=2023, month=end_month, day=end_date, hour=23, minute=59, second=59)
+    year=year, month=end_month, day=end_date, hour=23, minute=59, second=59)
 print(end_timestamp)
 
 rows_per_day = 480  # this is what we would like to be constant for everyday
@@ -35,19 +36,21 @@ data3 = pd.read_csv("image_data3.csv")
 data4 = pd.read_csv("image_data4.csv")
 data5 = pd.read_csv("image_data5.csv")
 data6 = pd.read_csv("image_data6.csv")
-
+# data7 = pd.read_csv("image_data7.csv")
+# print(data7)
+# data = data7
 data = pd.concat([data1, data2, data3, data4, data5, data6])
 
 data['time'] = pd.to_datetime(data["time"])
 data = data.sort_values(by='time')
-
+print(data['time'])
 # Filter the subset for a specific day
 subset = data[(data['time'] >= start_timestamp)
               & (data['time'] <= end_timestamp)]
 print(subset)
 # Extract unique dates from the DataFrame
 unique_dates = subset['time'].dt.date.unique()
-print(unique_dates)
+print(f'unique day={unique_dates}')
 day = subset['time'].dt.day
 hour = subset['time'].dt.hour
 minute = subset['time'].dt.minute
@@ -82,7 +85,8 @@ rgb = np.stack((red, green, blue), axis=-1)
 xgrid = np.arange(unique_days + 1)
 ygrid = np.arange(rows_per_day + 1)
 # Extract unique hours from the DataFrame
-unique_hours = subset['time'].dt.floor('h').unique()
+unique_hours = subset['time'].dt.hour.unique()
+print(unique_hours)
 
 # Create a list of timestamps for the y-axis based on unique hours
 # timestamps = pd.date_range(
@@ -90,15 +94,21 @@ unique_hours = subset['time'].dt.floor('h').unique()
 
 
 # Plot the data
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(2, 6))
 ax.pcolormesh(xgrid, ygrid, rgb, shading='auto')
 ax.set_frame_on(False)
 # Set the y-axis labels to the timestamps
 # ax.set_yticks(np.linspace(0, rows_per_day, len(timestamps)))
 # ax.set_yticklabels(timestamps.strftime('%H:%M'))  # Format as HH:MM
+spacing = 10
 ax.set_xticks(np.arange(len(unique_dates)))
 ax.set_xticklabels(unique_dates, rotation=45, ha='right')
+# for index, label in enumerate(ax.xaxis.get_ticklabels()):
+#     if index % spacing != 0 and index != 7:
+#         label.set_visible(False)
+# plt.yticks(np.arange(0, 24, 1))
 # Format the y-axis labels
 # ax.yaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+plt.savefig("zoomInJune10.pdf", format="pdf", bbox_inches="tight")
 
 plt.show()

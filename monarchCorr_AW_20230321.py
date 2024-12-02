@@ -15,8 +15,21 @@ import os
 directory_path = 'raw/Logs'
 files = glob.glob(os.path.join(directory_path, '*.txt'))
 
+# df = pd.read_csv('newsys_log.csv')
 df = pd.read_csv('combined_logs.csv')
 
+
+start_date, start_month = 10, 6
+end_date, end_month = 10, 6
+year = 2023
+
+start_timestamp = pd.Timestamp(
+    year=year, month=start_month, day=start_date).tz_localize('America/Chicago')
+end_timestamp = pd.Timestamp(
+    year=year, month=end_month, day=end_date, hour=23, minute=59, second=59).tz_localize('America/Chicago')
+
+print(end_timestamp)
+# print(df)
 # uncomment all of this for the first time run. otherwise using the combined_log.csv
 
 
@@ -95,6 +108,8 @@ df = pd.read_csv('combined_logs.csv')
 
 # remove the extra spacing infront of the heading of the columns
 df.columns = df.columns.str.replace(r'^\s+', '', regex=True)
+print(df['White_u'])
+df['White_u'] = df['White_u'].fillna(0)
 df['White_u'] = df['White_u'].astype('float').round().astype('int')
 df['Pyro [uV]'] = df['Pyro [uV]'].astype('float').round().astype('int')
 df['IR_M_u'] = df['IR_M_u'].astype('float')
@@ -106,9 +121,12 @@ df['Time [UTC]'] = df['Time [UTC]'].dt.tz_localize('UTC')
 df['time'] = df['Time [UTC]'].dt.tz_convert(
     'America/Chicago')
 
+df = df[(df['time'] >= start_timestamp)
+        & (df['time'] <= end_timestamp)]
+
 # filter, you can comment this line to view the full data
-df = df[(df['time'].dt.hour >= 9) & (df['time'].dt.hour <= 17)]
-df = duckdb.query("SELECT  *  FROM df WHERE White_u < 65535").to_df()
+# df = df[(df['time'].dt.hour >= 6) & (df['time'].dt.hour <= 10)]
+# df = duckdb.query("SELECT  *  FROM df WHERE White_u < 60000").to_df()
 # print(df['Time [UTC]'])
 weird_date = duckdb.query(
     'SELECT "time", "Pyro [uV]", "IR_M_u" FROM df WHERE ((IR_M_u < 1.5 AND IR_M_u > 0.5) AND ("Pyro [uV]" < 8000 AND "Pyro [uV]" > 2000))').to_df()
@@ -144,27 +162,127 @@ pivot_data = grouped_data.pivot(
 # plt.grid(axis='y', linestyle='--', alpha=0.7)
 # plt.tight_layout()
 # plt.show()
-print("This is the first line")
-print(df['time'])
+# print("This is the first line")
+# print(df['time'])
+
+# -------------------------------------------
+sunny_start_timestamp = pd.Timestamp(
+    year=2023, month=6, day=8).tz_localize('America/Chicago')
+sunny_end_timestamp = pd.Timestamp(
+    year=2023, month=6, day=8, hour=23, minute=59, second=59).tz_localize('America/Chicago')
+sunny_data = df[(df['time'] >= sunny_start_timestamp)
+                & (df['time'] <= sunny_end_timestamp)]
+
+cloudy_start_timestamp = pd.Timestamp(
+    year=2023, month=6, day=7).tz_localize('America/Chicago')
+cloudy_end_timestamp = pd.Timestamp(
+    year=2023, month=6, day=7, hour=23, minute=59, second=59).tz_localize('America/Chicago')
+cloudy_data = df[(df['time'] >= cloudy_start_timestamp)
+                 & (df['time'] <= cloudy_end_timestamp)]
+
+smoke_start_timestamp = pd.Timestamp(
+    year=2023, month=6, day=14).tz_localize('America/Chicago')
+smoke_end_timestamp = pd.Timestamp(
+    year=2023, month=6, day=14, hour=23, minute=59, second=59).tz_localize('America/Chicago')
+smoke_data = df[(df['time'] >= smoke_start_timestamp)
+                & (df['time'] <= smoke_end_timestamp)]
+
+# let store all of them inside files
+sunny_data.to_csv('sunny_data.csv', index=False)
+cloudy_data.to_csv('cloudy_data.csv', index=False)
+smoke_data.to_csv('smoke_data.csv', index=False)
+
+# Let take a comparison between:
+# - sunny and cloudy day
+print(f"sunny data : {sunny_data}")
+print(f"cloudy data: {cloudy_data}")
+ratio_sunny_over_cloudy = (sunny_data["IR_S_u"]/cloudy_data["IR_S_u"])
+print(f"ratio IR_SW: {ratio_sunny_over_cloudy}")
+# - sunny and Jun 14
+# - cloudy and Jun 14
+# graph where it is the abs(ratio difference) on time scale from 0 to 23:59:59
+# -------------------------------------------
 
 
-df['IR_S_u_sim'] = (df['IR_S_u'] > 0).astype(int)
+UVB_u = df['UVB_u']  # use this normalize and compare with all other sensors
+
+
+df['IR_S_u_sim'] = df['IR_S_u'].apply(lambda x: 0 if x <= 0.0 else 1)
 print(df['IR_S_u_sim'])
 df['PyroT_u [C]'] = df['PyroT_u [C]'].astype(float)
 temperature = df['PyroT_u [C]']
+humidity = df['RH_OB [%]']
 print(temperature)
 IR_sim = df['IR_S_u_sim']
+IR_s = df['IR_S_u']
+IR_m = df['IR_M_u']
+White = df['White_u']
+Vis = df['Vis_u [lx]']
+
+figIR, ax1 = plt.subplots()
+l1 = ax1.scatter(UVB_u, IR_s, c='deepskyblue',
+                 alpha=0.6, edgecolor='none')
+ax1.set_xlabel('UVB', fontweight='bold')
+ax1.set_xticklabels(ax1.get_xticks(), rotation=45, ha='right')
+ax1.set_ylabel('IR_Short', fontweight='bold')
+ax1.tick_params(axis='y')
+ax2 = ax1.twinx()
+ax2.set_ylabel('IR_Mid', fontweight='bold')
+l2 = ax2.scatter(UVB_u, IR_m, c='yellowgreen',
+                 alpha=0.6, edgecolor='none')
+ax2.tick_params(axis='y')
+figIR.suptitle(
+    f"Ultra-violet B vs Infrared on {start_month}-{start_date}-{year}", fontweight='bold')
+plt.legend([l1, l2], ['IR Short', 'IR Mid'], loc='lower right')
+
+figVis, ax1 = plt.subplots()
+l1 = ax1.scatter(UVB_u, White, c='blue', alpha=0.6, edgecolor='none')
+ax1.set_xlabel('UVB', fontweight='bold')
+ax1.set_xticklabels(ax1.get_xticks(), rotation=45, ha='right')
+ax1.set_ylabel('White Broadband', fontweight='bold', c='blue')
+ax1.tick_params(axis='y')
+ax2 = ax1.twinx()
+ax2.set_ylabel('White Filtered', fontweight='bold', c='violet')
+l2 = ax2.scatter(UVB_u, Vis, c='violet', alpha=0.6, edgecolor='none')
+ax2.tick_params(axis='y')
+figVis.suptitle(
+    f"Ultra-violet B vs White Broadband & White Filtered(Vis) on {start_month}-{start_date}-{year}", fontweight='bold')
+plt.legend([l1, l2], ['White Broadband',
+           'White Filtered(Vis)'], loc='lower right')
+
+figIRVis, ax1 = plt.subplots()
+l1 = ax1.scatter(Vis, IR_s, c='deepskyblue',
+                 alpha=0.6, edgecolor='none')
+ax1.set_xlabel('White Filtered', fontweight='bold')
+ax1.set_xticklabels(ax1.get_xticks(), rotation=45, ha='right')
+ax1.set_ylabel('IR_Short', fontweight='bold')
+ax1.tick_params(axis='y')
+ax2 = ax1.twinx()
+ax2.set_ylabel('IR_Mid', fontweight='bold')
+l2 = ax2.scatter(Vis, IR_m, c='yellowgreen',
+                 alpha=0.6, edgecolor='none')
+ax2.tick_params(axis='y')
+figIRVis.suptitle(
+    f"White Filtered vs Infrared on {start_month}-{start_date}-{year}", fontweight='bold')
+plt.legend([l1, l2], ['IR Short', 'IR Mid'], loc='upper left')
 
 fig, ax1 = plt.subplots()
-error_occured = duckdb.query("SELECT time FROM df WHERE IR_S_u == 0").to_df()
-csv_file_path = 'zero_reading_time.csv'
-error_occured.to_csv(csv_file_path, index=False)
-print(f'Saved combined data to CSV: {csv_file_path}')
+# error_occured = duckdb.query("SELECT time FROM df WHERE IR_S_u == 0").to_df()
+# csv_file_path = 'zero_reading_time.csv'
+# error_occured.to_csv(csv_file_path, indexs=False)
+# print(f'Saved combined data to CSV: {csv_file_path}')
 
-print(error_occured)
-ax1.plot(df['time'], IR_sim, c='r')
+# print(error_occured)
+# ax1.plot(df['time'], IR_sim, c='r')
+# ax1.set_xlabel('Time', fontweight='bold')
+# ax1.set_ylabel('IR Short Wave Reading (0/1)', fontweight='bold')
+# ax1.tick_params(axis='y', labelcolor='r')
+
+# ax1.plot(df['time'], humidity, c='r')
+ax1.plot(df['time'], IR_s, c='r')
 ax1.set_xlabel('Time', fontweight='bold')
-ax1.set_ylabel('IR Short Wave Reading (0/1)', fontweight='bold')
+# ax1.set_ylabel('Humidity', fontweight='bold')
+ax1.set_ylabel('IR_SW', fontweight='bold')
 ax1.tick_params(axis='y', labelcolor='r')
 # ax1.set_title('Temperature vs. Simplified IR Readings thru Time',
 #               fontweight='bold')
@@ -175,9 +293,33 @@ ax2.set_ylabel('Temperature')
 ax2.scatter(df['time'], temperature, c='b', s=1)
 ax2.tick_params(axis='y', labelcolor='tab:blue')
 
+# ax3 = ax1.twinx()
+# ax3.set_ylabel('IR Short Wave Reading', fontweight='bold')
+# ax3.scatter(df['time'], IR_s, c='green', s=1)
+# ax3.tick_params(axis='y', labelcolor='tab:green')
+
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
+# Extract time and battery voltage columns
+time = df['time']
+battery_voltage = df['Bat [V]']
 
+# Create the plot
+plt.figure(figsize=(10, 6))
+plt.scatter(time, battery_voltage, label='Battery Voltage', color='g')
+
+# Label the axes
+plt.xlabel('Time', fontweight='bold')
+plt.ylabel('Battery Voltage (V)', fontweight='bold')
+
+# Add a title
+plt.title('Battery Voltage vs Time', fontweight='bold')
+
+# Add a legend
+plt.legend()
+
+# Display the plot
+plt.show()
 
 # Removing battery level, roll, pitch, K&Z Temp, and NA row that was added as a buffer.
 t_fract = df['time'].astype(str)
@@ -215,7 +357,7 @@ i = 0
 for col in cols:
     i += 1
     ax = plt.subplot(3, 2, i)
-    scatter = ax.scatter(df['Pyro [uV]'], df[col], c=t_fract, alpha=0.05, s=2)
+    scatter = ax.scatter(df['Pyro [uV]'], df[col], c=t_fract, alpha=0.5, s=2)
     if col == "IR_M_u":
         # red region was detected on 1 day UTC 2023/06/12 23:06:06 - 2023/06/12 23:52:24 blue sky
         # nothing can be seems out of the ordinary just from the looking at photos
