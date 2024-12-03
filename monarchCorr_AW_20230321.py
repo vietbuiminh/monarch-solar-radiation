@@ -19,8 +19,8 @@ files = glob.glob(os.path.join(directory_path, '*.txt'))
 df = pd.read_csv('combined_logs.csv')
 
 
-start_date, start_month = 10, 6
-end_date, end_month = 10, 6
+start_date, start_month = 18, 6
+end_date, end_month = 18, 6
 year = 2023
 
 start_timestamp = pd.Timestamp(
