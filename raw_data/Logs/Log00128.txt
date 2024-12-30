@@ -1,0 +1,4 @@
+Lib = 0.3.0 SN = FFFF-FFFF-FFFF-FFFF
+Time [UTC], PresOB [mBar], RH_OB [%], TempOB [C], Temp RTC [C], Bat [V], Kipp and Zonen Voltage [uV], R_u [deg], P_u [deg], UVA_u, UVB_u, White_u, Vis_u [lx], IR_S_u, IR_M_u, PyroT_u [C], 
+2023/07/03 13:39:20,990.51,18.55,43.09,43.00,2.64,6328.13, 2.96,-4.78,366,97280,6994,7581.08,0.13,0.19,15.53,
+2023/07/03 13:39:23,990.57,18.50,43.18,43.25,2.65,6328.13, 2.96,-4.76,366,97280,6994,7581.08,0.13,0.19,15.53,

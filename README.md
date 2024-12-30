@@ -1,9 +1,21 @@
 # Monarch Solar Radiation
-~ an on-going research project~
+~ dived back in 2024 ~
 
 ---
-**Last updated:** 
-2024-10-03
+
+[Old presentation about the project](MonarchProject.pdf)
+
+--- future/present ---
+
+issue arised from the way that Margay Vref get voltage that affect the battery reading of Model2v2, the current fix and investigation has been going on since December 2024.
+issue also coming from the reading of Monarch board in one of the 4 sensors
+currently investigating the IR reading when there are large amount of wild smoke aerosol in the air.
+
+main file to look at is from `scripts/main_monarchCorr_VB_2024.py`
+
+
+
+--- previous ---
 ![](graphs/rgb_value_from_zero_readings.png)
 This graphs show the RGB value of the zero readings from IR_s sensor. The scatter with black edge are the zero readings. There is no correlation between the IR shortwave reading with the rainy/cloudy conditions, it did catch some zeros from the huge rain storm on the 10 of June in 2023 but other zero readings from checking the camera photos did not support that arguement. 
 

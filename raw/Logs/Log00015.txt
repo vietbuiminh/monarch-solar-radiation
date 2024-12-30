@@ -1,4 +1,0 @@
-Lib = 0.3.0 SN = FFFF-FFFF-FFFF-FFFF
-Time [UTC], PresOB [mBar], RH_OB [%], TempOB [C], Temp RTC [C], Bat [V], Kipp and Zonen Voltage [uV]
-2023/03/14 18:13:11,994.89,14.47,22.34,21.75,2.79,171.88
-2023/03/14 18:13:15,994.94,14.33,22.30,21.75,2.79,171.88
